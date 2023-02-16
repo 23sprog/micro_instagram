@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ post.slug }}
+{% endblock %}
+
+{% block content %}
+    <h3><a href="{% url "account:profile" post.user.pk %}">{{ post.user.username }}</a></h3>
+    <p>{{ post.body }}</p>
+    {% if request.user == post.user %}
+        <a href="{% url "home:delete" post.id post.slug %}" class="btn btn-danger">Delete</a>
+        <a href="{% url "home:update" post.id %}" class="btn btn-info">Update</a>
+    {% endif %}
+
+    {% if request.user.is_authenticated %}
+        <br/><a href="{% url "home:vote" post.id post.slug %}" class="btn btn-danger mt-2 mb-2 col-md-2">Like {{ post.get_like_post }}</a>
+        <div class="card bg-warning col-md-4">
+            <p class="card-header">{{ comment_reply.user }} - {{ comment_reply.created_at|timesince }}</p>
+            <p class="p-2">{{ comment_reply.text }}</p>
+            <hr>
+            <form method="post" action="" class="rounded p-2">
+                {% csrf_token %}
+                <div class="mb-1 ">{{ form }}</div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    {% else %}
+        <p class="alert alert-danger">You must login to site for send your comments.</p>
+    {% endif %}
+
+    {% for comment in comments %}
+        <div class="card mt-2 bg-dark text-white col-md-6 p-2">
+            <p class="card-header">{{ comment.user }} - {{ comment.created_at|timesince }} <a class="btn btn-secondary" href="{% url "home:comment_reply" post.id post.slug comment.id %}">Reply</a></p>
+            <p class="card-body">{{ comment.text }}</p>
+        {% if comment.child_comment %}
+            {% with replies=comment.child_comment.all %}
+                {% for reply in replies %}
+                    <p class="card bg-primary text-white">
+                        <span class="card-header">{{ reply.user }} - {{ reply.created_at|timesince }}</span>
+                        <span class="card-body">{{ reply.text }}</span>
+                     </p>
+                {% endfor %}
+            {% endwith %}
+        {% endif %}
+        </div>
+    {% empty %}
+        <p>Not Comment yet</p>
+    {% endfor %}
+
+{% endblock %}

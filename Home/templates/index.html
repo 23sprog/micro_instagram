@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+    <form method="get" action="" class="container mb-2">
+        {{ form.as_table }}
+        <button type="submit" class="btn btn-success mt-2">Search</button>
+    </form>
+    <div class="row ">
+        {% for post in posts %}
+            <div class="card col-4 me-3 mb-3" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{ post.user.username }}</h5>
+                <a class="card-text" href="{{ post.get_absolute_url }}"><p>{{ post.body|truncatewords:15 }}</p></a>
+                <h4 class="card-footer">{{ post.created_at|timesince }}</h4>
+              </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

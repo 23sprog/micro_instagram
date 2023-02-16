@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+Direct
+{% endblock %}
+
+{% block content %}
+    {% for com in communications %}
+        <div class="card ms-1 mt-2 mb-2 me-1 bg-secondary ">
+            <div class=" card-body">
+                  <a href="" class="btn btn-light">{{ com.get_communications_user_private }}</a>
+                  <a class="text-light ms-1">Messages</a>
+            </div>
+        </div>
+    {% empty %}
+        <h3>No Direct</h3>
+    {% endfor %}
+
+
+{% endblock %}
